@@ -5,28 +5,36 @@ def call(credentials, branch, refspec=null, isPRBuilder=null) {
     
     def refs = DEFAULT_REF
     if (refspec == 'pullRequest') {
-    branch = "origin/pr/${branch}/head"
-    refs = PR_REF
+        branch = "origin/pr/${branch}/head"
+        refs = PR_REF
     }
     if (refspec == 'tag') {
-    refs = TAG_REF
+        refs = TAG_REF
     }
     if (isPRBuilder != null) {
-    branch = isPRBuilder
-    refs = PR_REF
+        branch = isPRBuilder
+        refs = PR_REF
     }
     dir('omim') {
-    checkout([$class: 'GitSCM',
+        checkout([$class: 'GitSCM',
             branches: [[name: branch]],
             doGenerateSubmoduleConfigurations: false,
             extensions:
                 [[$class: 'CleanCheckout'],
-                [$class: 'CloneOption', depth: 0, noTags: false, shallow: false,timeout: 90],
-                [$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false,
-                recursiveSubmodules: true,
-                trackingSubmodules: false]],
+                [$class: 'CloneOption', 
+                    depth: 0, 
+                    noTags: false,
+                    shallow: false,
+                    timeout: 90],
+                [$class: 'SubmoduleOption',
+                    disableSubmodules: false, 
+                    parentCredentials: false,
+                    recursiveSubmodules: true,
+                    trackingSubmodules: false]],
                 submoduleCfg: [],
-                userRemoteConfigs: [[credentialsId: credentials, url: 'https://github.com/mapsme/omim', refspec: refs]]
-    ]);
+                userRemoteConfigs: [[credentialsId: credentials,
+                    url: 'https://github.com/mapsme/omim',
+                    refspec: refs]]
+        ]);
     }
 }
